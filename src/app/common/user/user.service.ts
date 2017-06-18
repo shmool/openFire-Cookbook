@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 export enum authStatus {
   'pending',
@@ -17,6 +18,7 @@ export interface User {
 @Injectable()
 export class UserService {
   user: User;
+  userAuthState$: Subject<any> = new Subject();
 
   constructor() {
     this.startPending();
@@ -25,21 +27,9 @@ export class UserService {
     }, 2000);
   }
 
-  signInWithGoogle() {
-    return this.generateUser('Google User', 'red')
-  }
-
-  signInWithPassword(user): Promise<User> {
-    return this.generateUser('JS-Poland', 'blue')
-  };
-
-  signUp(user) {
-    return this.generateUser(user.displayName, 'green');
-  }
-
-  signOut() {
+  startPending() {
     this.user = {
-      authStatus: authStatus.anonymous
+      authStatus: authStatus.pending
     };
   }
 
@@ -57,13 +47,27 @@ export class UserService {
     });
     return userPromise.then(generatedUser => {
       this.user = generatedUser;
+      this.userAuthState$.next(true);
       return this.user;
     });
   }
 
-  startPending() {
+  signOut() {
     this.user = {
-      authStatus: authStatus.pending
+      authStatus: authStatus.anonymous
     };
+    this.userAuthState$.next(null);
+  }
+
+  signInWithGoogle() {
+    return this.generateUser('Google User', 'red')
+  }
+
+  signInWithPassword(user): Promise<User> {
+    return this.generateUser('JS-Poland', 'blue')
+  };
+
+  signUp(user) {
+    return this.generateUser(user.displayName, 'green');
   }
 }

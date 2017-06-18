@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RoutingService } from '../common/router/routing.service';
 
 @Component({
   selector: 'app-main',
@@ -13,7 +14,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
-  constructor() {
+  constructor(private routerService: RoutingService) {
   }
 
   ngOnInit() {
