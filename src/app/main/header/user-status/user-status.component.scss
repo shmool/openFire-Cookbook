@@ -1,0 +1,31 @@
+.header-spinner {
+  height: 50px;
+}
+
+.user-info {
+  margin-left: 10px;
+  color: white;
+
+  .signed-in-user-container {
+    margin-left: 10px;
+    padding-top: 10px;
+
+    .usernamelink {
+      padding: 0 10px 0 0;
+      border-radius: 19px 5px 5px 19px;
+      text-transform: none;
+      white-space: nowrap;
+
+      .username {
+        display: inline-block;
+        line-height: 38px;
+        vertical-align: top;
+        width: calc(100% - 46px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+      }
+    }
+  }
+}

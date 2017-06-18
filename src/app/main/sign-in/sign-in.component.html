@@ -1,0 +1,62 @@
+<div class="sign-in-wrapper">
+  <div class="sign-in">
+    <div fxLayout="column" fxLayoutAlign="center center">
+      <h1>Sign in</h1>
+
+      <md-card>
+        <div fxLayout="row" fxLayoutAlign="space-between start" class="sign-in-or-up">
+          <span>sign in</span>
+          <md-slide-toggle
+            (change)="signUp = !signUp">
+          </md-slide-toggle>
+          <span>sign up</span>
+        </div>
+
+        <md-input-container class="sign-in-input" *ngIf="signUp">
+          <input mdInput
+                 placeholder="name"
+                 [(ngModel)]="user.displayName">
+        </md-input-container>
+
+        <md-input-container class="sign-in-input">
+          <input mdInput
+                 placeholder="email"
+                 type="email"
+                 [(ngModel)]="user.email">
+        </md-input-container>
+
+        <md-input-container class="sign-in-input">
+          <input mdInput
+                 placeholder="password"
+                 type="password"
+                 [(ngModel)]="user.password">
+        </md-input-container>
+
+        <md-input-container class="sign-in-input" *ngIf="signUp">
+          <input mdInput
+                 placeholder="repeat password"
+                 type="password"
+                 [(ngModel)]="user.repeatPassword">
+        </md-input-container>
+
+        <button md-raised-button color="accent" class="sign-in-btn"
+                (click)="signInWithPassword()">
+          Sign {{ signUp ? 'Up' : 'In' }}
+        </button>
+
+        <md-error *ngIf="signInError">{{ signInError.message }}</md-error>
+
+        <h2>OR</h2>
+
+        <button class="auth-google"
+                md-raised-button
+                (click)="signInWithGoogle()">
+          <md-icon svgIcon="google"></md-icon>
+          Sign in with Google
+        </button>
+
+      </md-card>
+
+    </div>
+  </div>
+</div>
