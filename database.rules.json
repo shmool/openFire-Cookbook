@@ -1,0 +1,11 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": false,
+    "recipes": {
+      "$recipeId": {
+        ".write": "auth.uid != null && (!data.exists() || data.child('uid').val() === auth.uid)"
+      }
+    }
+  }
+}
