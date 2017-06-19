@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-export enum authStatus {
+export enum authStates {
   'pending',
   'authenticated',
   'anonymous'
@@ -12,51 +12,49 @@ export interface User {
   uid?: string,
   photoURL?: string,
   avatarColor?: string,
-  authStatus: authStatus
+  email?: string,
 }
 
 @Injectable()
 export class UserService {
   user: User;
-  userAuthState$: Subject<any> = new Subject();
+  authState: authStates;
+  userAuthData$: Subject<any> = new Subject();
+  authError: any = null;
 
   constructor() {
-    this.startPending();
+    this.startAuth();
     setTimeout(() => {
       this.signOut();
     }, 2000);
   }
 
-  startPending() {
-    this.user = {
-      authStatus: authStatus.pending
-    };
-  }
-
   generateUser(displayName, avatarColor) {
-    this.startPending();
+    this.startAuth();
     let userPromise = new Promise<User>((resolve, reject) => {
       setTimeout(() => {
         const user = {
           displayName,
           avatarColor,
-          authStatus: authStatus.authenticated
         };
+        this.authState = authStates.authenticated;
         resolve(user);
       }, 2000);
     });
     return userPromise.then(generatedUser => {
       this.user = generatedUser;
-      this.userAuthState$.next(true);
+      this.userAuthData$.next(true);
       return this.user;
     });
   }
 
   signOut() {
     this.user = {
-      authStatus: authStatus.anonymous
+      displayName: '',
+      avatarColor: ''
     };
-    this.userAuthState$.next(null);
+    this.authState = authStates.anonymous;
+    this.userAuthData$.next(null);
   }
 
   signInWithGoogle() {
@@ -69,5 +67,10 @@ export class UserService {
 
   signUp(user) {
     return this.generateUser(user.displayName, 'green');
+  }
+
+  startAuth() {
+    this.authError = null;
+    this.authState = authStates.pending;
   }
 }

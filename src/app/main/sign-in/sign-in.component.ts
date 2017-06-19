@@ -16,7 +16,10 @@ export class SignInComponent implements OnInit {
     repeatPassword: ''
   };
   signUp = false;
-  signInError;
+
+  get signInError() {
+    return this.userService.authError;
+  }
 
   constructor(
     iconRegistry: MdIconRegistry,
@@ -31,12 +34,10 @@ export class SignInComponent implements OnInit {
   }
 
   signInWithGoogle() {
-    this.signInError = null;
     return this.userService.signInWithGoogle();
   }
 
   signInWithPassword() {
-    this.signInError = null;
     return (this.signUp ?
             this.userService.signUp(this.user) :
             this.userService.signInWithPassword(this.user));
