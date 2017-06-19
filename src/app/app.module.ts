@@ -18,6 +18,7 @@ import { AngularFireModule } from 'angularfire2';
 import { environment } from '../environments/environment';
 import { AngularFireAuthModule } from 'angularfire2/auth/auth.module';
 import { AngularFireDatabaseModule } from 'angularfire2/database/database.module';
+import { CookbookModule } from './main/cookbook/cookbook.module';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { AngularFireDatabaseModule } from 'angularfire2/database/database.module
     UserModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
-    AngularFireDatabaseModule
+    AngularFireDatabaseModule,
+    CookbookModule
   ],
   providers: [],
   bootstrap: [AppComponent]

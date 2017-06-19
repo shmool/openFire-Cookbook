@@ -1,0 +1,28 @@
+.example-card {
+  width: 400px;
+}
+
+.example-header-image {
+  background-image: url('https://s-media-cache-ak0.pinimg.com/236x/81/64/fc/8164fc012adf11d046febded43abf6b2.jpg');
+  background-size: cover;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+}
+
+md-input-container {
+  width: 100%;
+}
+
+.recipe-edit-disabled {
+
+  .mat-input-element:disabled {
+    color: black;
+  }
+}
+
+.recipe-form-section-title {
+  font-size: 24px;
+}

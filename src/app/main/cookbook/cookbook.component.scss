@@ -1,0 +1,32 @@
+.recipes-container {
+  height: 100%;
+}
+
+.recipes-sidenav-content {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.recipes-sidenav {
+  padding: 20px;
+  width: 300px;
+  max-width: 100%;
+  height: calc(100% - 128px);
+}
+
+.recipes-title {
+  font-size: 18px;
+}
+
+.app-toolbar-filler {
+  flex: 1 1 auto;
+}
+
+.cookbook-toolbar {
+  background: transparent;
+}
+
+.current-user {
+  background: pink;
+}

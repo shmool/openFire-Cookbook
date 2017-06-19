@@ -1,0 +1,83 @@
+<md-card class="example-card recipe-edit-disabled">
+
+  <form [formGroup]="recipeForm" novalidate class="form-group">
+    <fieldset [disabled]="read">
+
+      <md-card-header>
+        <app-avatar md-card-avatar
+                    [color]="recipeOwner?.avatarColor"
+                    [photoUrl]="recipeOwner?.photoURL"></app-avatar>
+
+        <md-card-title class="recipe-title">
+          <md-input-container style="margin-top: -14px;">
+            <input mdInput
+                   formControlName="title"
+                   style="font-size: 30px;"
+                   [placeholder]="getPlaceholder('title')"
+                   #titleInput>
+          </md-input-container>
+        </md-card-title>
+
+        <div *ngIf="!read" (click)="handleSave()">
+          <button md-mini-fab color="primary">
+            <md-icon>save</md-icon>
+          </button>
+        </div>
+
+        <div *ngIf="read && !writeProtected" (click)="handleEdit()">
+          <button md-mini-fab >
+            <md-icon>mode_edit</md-icon>
+          </button>
+        </div>
+
+      </md-card-header>
+
+      <md-card-content>
+
+        <div formArrayName="ingredients">
+          <div class="form-group">
+            <div class="recipe-form-section-title">Ingredients
+              <button md-mini-fab (click)="addIngredient($event)">
+                <md-icon>add</md-icon>
+              </button>
+            </div>
+          </div>
+
+          <div *ngFor="let ingredient of ingredients; let i = index;"
+               [formGroupName]="i"
+               class="form-inline">
+
+            <div fxFlex>
+              <md-input-container>
+                <input mdInput
+                       [placeholder]="getPlaceholder('ingredient')"
+                       formControlName="name"
+                       class="form-control">
+              </md-input-container>
+            </div>
+
+            <div fxFlex>
+              <md-input-container>
+                <input mdInput
+                       [placeholder]="getPlaceholder('quantity')"
+                       formControlName="quantity"
+                       class="form-control">
+              </md-input-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="recipe-form-section-title">Instructions</div>
+        <md-input-container>
+          <textarea mdInput
+                    type="text"
+                    formControlName="instructions"
+                    class="form-control"
+                    rows="5"></textarea>
+        </md-input-container>
+
+      </md-card-content>
+    </fieldset>
+  </form>
+
+</md-card>
