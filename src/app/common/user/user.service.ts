@@ -4,7 +4,6 @@ import { AngularFireAuth } from 'angularfire2/auth/auth';
 import { AngularFireDatabase } from 'angularfire2/database/database';
 import * as firebase from 'firebase/app';
 
-
 export enum authStates {
   'pending',
   'authenticated',
@@ -88,6 +87,11 @@ export class UserService {
     console.error(message, err);
     this.authError = err;
     throw err;
+  }
+
+  startAuth() {
+    this.authError = null;
+    this.authState = authStates.pending;
   }
 
   startAuth() {
