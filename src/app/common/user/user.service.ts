@@ -93,9 +93,4 @@ export class UserService {
     this.authError = null;
     this.authState = authStates.pending;
   }
-
-  startAuth() {
-    this.authError = null;
-    this.authState = authStates.pending;
-  }
 }
