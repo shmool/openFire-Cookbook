@@ -50,18 +50,16 @@ exports.saveRecipe = functions.database.ref('/recipes/{id}')
 exports.addUserToDB = functions.auth.user()
   .onCreate(event => {
     console.log(event.data)
-    // Get the uid of the deleted user.
+    // Get the uid of the added user.
     var uid = event.data.uid;
-    let users = {};
-    users[uid] = {
+    const newUser = {
       avatarColor: getRandomColor()
     };
 
     if (event.data.photoURL) {
-      users[uid].photoURL = event.data.photoURL;
+      newUser.photoURL = event.data.photoURL;
     }
 
-    // Remove the user from your Realtime Database's /users node.
-    userList = db.ref('users');
-    userList.update(users);
+    const userList = db.ref('users');
+    userList.child(uid).set(newUser);
   });
