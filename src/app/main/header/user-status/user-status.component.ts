@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService, authStatus, User } from '../../../common/user/user.service';
+import { UserService, authStates, User } from '../../../common/user/user.service';
 
 @Component({
   selector: 'app-user-status',
   template: `
-    <div [ngSwitch]="authStatus"
+    <div [ngSwitch]="authState"
          class="user-info">
 
-      <md-spinner *ngSwitchCase="authStatuses.pending"
+      <md-spinner *ngSwitchCase="authStates.pending"
                   color="accent"
                   class="header-spinner"></md-spinner>
 
-      <a *ngSwitchCase="authStatuses.anonymous" md-button [routerLink]="'sign-in'">
+      <a *ngSwitchCase="authStates.anonymous" md-button [routerLink]="'sign-in'">
         <md-icon>account_circle</md-icon>
         <span>Sign in</span>
       </a>
 
-      <div *ngSwitchCase="authStatuses.authenticated"
+      <div *ngSwitchCase="authStates.authenticated"
            class="signed-in-user-container"
            [mdMenuTriggerFor]="menuPerson">
 
@@ -40,7 +40,7 @@ import { UserService, authStatus, User } from '../../../common/user/user.service
 })
 export class UserStatusComponent implements OnInit {
   user: User;
-  authStatuses = authStatus;
+  authStates = authStates;
 
   constructor(private userService: UserService) {
     this.user = userService.user;
@@ -48,8 +48,9 @@ export class UserStatusComponent implements OnInit {
 
   ngOnInit() {
   }
-  get authStatus() {
-    return this.userService.user.authStatus;
+
+  get authState() {
+    return this.userService.authState;
   }
 
 

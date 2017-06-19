@@ -6,7 +6,7 @@ import { UserService } from '../user/user.service';
 export class RoutingService {
 
   constructor(private router: Router, private userService: UserService) {
-    userService.userAuthState$.subscribe(authState => {
+    userService.userAuthData$.subscribe(authState => {
       authState ? router.navigate(['']) : router.navigate(['/sign-in']);
     });
   }

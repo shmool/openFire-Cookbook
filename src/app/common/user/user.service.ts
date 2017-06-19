@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable } from 'rxjs';
+import { AngularFireAuth } from 'angularfire2/auth/auth';
+import { AngularFireDatabase } from 'angularfire2/database/database';
+import * as firebase from 'firebase/app';
 
-export enum authStatus {
+
+export enum authStates {
   'pending',
   'authenticated',
   'anonymous'
@@ -12,62 +16,82 @@ export interface User {
   uid?: string,
   photoURL?: string,
   avatarColor?: string,
-  authStatus: authStatus
+  email?: string,
 }
 
 @Injectable()
 export class UserService {
   user: User;
-  userAuthState$: Subject<any> = new Subject();
+  authState: authStates;
+  userAuthData$: Observable<any>;
+  authError: any = null;
 
-  constructor() {
-    this.startPending();
-    setTimeout(() => {
-      this.signOut();
-    }, 2000);
-  }
-
-  startPending() {
-    this.user = {
-      authStatus: authStatus.pending
-    };
-  }
-
-  generateUser(displayName, avatarColor) {
-    this.startPending();
-    let userPromise = new Promise<User>((resolve, reject) => {
-      setTimeout(() => {
-        const user = {
-          displayName,
-          avatarColor,
-          authStatus: authStatus.authenticated
-        };
-        resolve(user);
-      }, 2000);
+  constructor(public afAuth: AngularFireAuth, private afDB: AngularFireDatabase) {
+    this.startAuth();
+    this.userAuthData$ = afAuth.authState;
+    const userDetails$ = this.userAuthData$.switchMap(user => {
+      return user ? this.getUserDetails(user) : Observable.of(null);
     });
-    return userPromise.then(generatedUser => {
-      this.user = generatedUser;
-      this.userAuthState$.next(true);
+
+    userDetails$.subscribe(user => {
+      this.user = user;
+      if (user) {
+        this.authState = authStates.authenticated;
+        if (!user.displayName) {
+          this.user.displayName = this.user.email.split('@')[0];
+        }
+      } else {
+        this.authState = authStates.anonymous;
+      }
       return this.user;
-    });
+    })
+  }
+
+  getUserDetails(user) {
+    return this.afDB.object(`users/${user.uid}`)
+      .map(userDetails => Object.assign({}, user, userDetails));
   }
 
   signOut() {
-    this.user = {
-      authStatus: authStatus.anonymous
-    };
-    this.userAuthState$.next(null);
+    this.authState = authStates.pending;
+    this.afAuth.auth.signOut()
+      .then(() => {
+        this.user = {};
+        this.authState = authStates.anonymous;
+      });
   }
 
   signInWithGoogle() {
-    return this.generateUser('Google User', 'red')
+    this.startAuth();
+
+    return this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+      .catch(err => this.handleAuthError('error signing in:', err));
   }
 
-  signInWithPassword(user): Promise<User> {
-    return this.generateUser('JS-Poland', 'blue')
+  signInWithPassword(user) {
+    this.startAuth();
+
+    return this.afAuth.auth.signInWithEmailAndPassword(user.email, user.password)
+      .catch(err => this.handleAuthError('error signing in:', err));
   };
 
   signUp(user) {
-    return this.generateUser(user.displayName, 'green');
+    this.startAuth();
+
+    return this.afAuth.auth.createUserWithEmailAndPassword(user.email, user.password)
+      .catch(err => this.handleAuthError('error signing up:', err));
+  }
+
+  handleAuthError(message: String, err) {
+    this.user = {};
+    this.authState = authStates.anonymous;
+    console.error(message, err);
+    this.authError = err;
+    throw err;
+  }
+
+  startAuth() {
+    this.authError = null;
+    this.authState = authStates.pending;
   }
 }
